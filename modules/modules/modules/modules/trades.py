@@ -173,3 +173,57 @@ def add_trade(
                     symbol
                 )
                 )
+def get_realized_pnl():
+    import pandas as pd
+
+
+def get_realized_pnl():
+
+    trades = pd.read_sql(
+        "SELECT * FROM trades",
+        engine
+    )
+
+    if trades.empty:
+        return 0
+
+    realized = 0
+
+    positions = {}
+
+    for _, t in trades.iterrows():
+
+        sym = t["symbol"]
+
+        if sym not in positions:
+
+            positions[sym] = {
+                "qty": 0,
+                "avg": 0
+            }
+
+        p = positions[sym]
+
+        if t["side"] == "buy":
+
+            total_qty = p["qty"] + t["quantity"]
+
+            p["avg"] = (
+                p["qty"] * p["avg"] +
+                t["quantity"] * t["price"]
+            ) / total_qty
+
+            p["qty"] = total_qty
+
+        else:
+
+            pnl = (
+                t["price"] -
+                p["avg"]
+            ) * t["quantity"]
+
+            realized += pnl
+
+            p["qty"] -= t["quantity"]
+
+    return realized
