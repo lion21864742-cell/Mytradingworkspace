@@ -1,0 +1,45 @@
+holdings = get_holdings()
+
+if not holdings.empty:
+
+    market_values = []
+    pnl_values = []
+
+    for _, row in holdings.iterrows():
+
+        price = get_price(
+            row["symbol"],
+            row["market"]
+        )
+
+        if price:
+
+            market_value = (
+                price *
+                row["quantity"]
+            )
+
+            cost = (
+                row["avg_price"] *
+                row["quantity"]
+            )
+
+            pnl = market_value - cost
+
+            market_values.append(market_value)
+            pnl_values.append(pnl)
+
+    total_value = sum(market_values)
+    total_pnl = sum(pnl_values)
+
+    c1,c2 = st.columns(2)
+
+    c1.metric(
+        "總市值",
+        f"HK${total_value:,.2f}"
+    )
+
+    c2.metric(
+        "總盈虧",
+        f"HK${total_pnl:,.2f}"
+    )
