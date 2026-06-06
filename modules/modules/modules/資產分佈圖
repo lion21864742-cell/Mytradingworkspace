@@ -1,0 +1,23 @@
+if not holdings.empty:
+
+    holdings["Value"] = holdings.apply(
+        lambda x:
+        get_price(
+            x["symbol"],
+            x["market"]
+        ) *
+        x["quantity"],
+        axis=1
+    )
+
+    fig = px.pie(
+        holdings,
+        values="Value",
+        names="symbol",
+        title="資產分佈"
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
