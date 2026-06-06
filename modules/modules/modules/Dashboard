@@ -43,3 +43,6 @@ if not holdings.empty:
         "總盈虧",
         f"HK${total_pnl:,.2f}"
     )
+st.divider()
+
+st.subheader("📝 新增交易")
